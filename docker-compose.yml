@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  backend:
+    build: 
+      context: ./backend
+    depends_on:
+      - postgres
+    environment:
+      PGAPPNAME: conference_app
+      PGDATABASE: conference_db
+      PGHOST: postgres
+      PGPASSWORD: 123456
+      PGPORT: 5432
+      PGUSER: backend_service
+    ports:
+      - "8080:80"
+    volumes:
+      - /c/Users/Owner/prodev-conference-app/backend/data:/usr/local/backend/data
+      - /c/Users/Owner/prodev-conference-app/backend/src:/usr/local/backend/src
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      PORT: 80
+      REACT_APP_API_URL: 'http://localhost:8080/api'
+    ports:
+      - "8081:80"
+  postgres:
+    container_name: postgres
+    environment:
+      POSTGRES_DB: conference_db
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: backend_service
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    volumes: 
+      - /c/Users/Owner/prodev-conference-app/backend/data:/data/db
