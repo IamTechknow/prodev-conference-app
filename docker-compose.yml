@@ -4,6 +4,7 @@ services:
     build: 
       context: ./backend
     depends_on:
+      - locations
       - postgres
     environment:
       PGAPPNAME: conference_app
@@ -20,11 +21,39 @@ services:
   frontend:
     build:
       context: ./frontend
+    depends_on:
+      - backend
+      - locations
     environment:
       PORT: 80
       REACT_APP_API_URL: 'http://localhost:8080/api'
     ports:
       - "8081:80"
+  locations-postgres:
+    environment:
+      POSTGRES_DB: locations
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: locations_service
+    image: "postgres:latest"
+    volumes: 
+      - /c/Users/Owner/prodev-conference-app/locations/data:/data/db
+  locations:
+    build: 
+      context: ./locations
+    depends_on:
+      - locations-postgres
+    environment:
+      PGAPPNAME: conference_app
+      PGDATABASE: locations
+      PGHOST: locations-postgres
+      PGPASSWORD: 123456
+      PGPORT: 5432
+      PGUSER: locations_service
+    ports:
+      - "8082:80"
+    volumes:
+      - /c/Users/Owner/prodev-conference-app/locations/data:/usr/local/locations/data
+      - /c/Users/Owner/prodev-conference-app/locations/src:/usr/local/locations/src
   postgres:
     container_name: postgres
     environment:
