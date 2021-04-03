@@ -25,9 +25,9 @@ services:
     volumes:
       - /c/Users/Owner/prodev-conference-app/auth/data:/usr/local/auth/data
       - /c/Users/Owner/prodev-conference-app/auth/src:/usr/local/auth/src
-  backend:
+  conference:
     build: 
-      context: ./backend
+      context: ./conference
     depends_on:
       - auth
       - locations
@@ -38,17 +38,17 @@ services:
       PGHOST: postgres
       PGPASSWORD: 123456
       PGPORT: 5432
-      PGUSER: backend_service
+      PGUSER: conference_service
     ports:
       - "8080:80"
     volumes:
-      - /c/Users/Owner/prodev-conference-app/backend/data:/usr/local/backend/data
-      - /c/Users/Owner/prodev-conference-app/backend/src:/usr/local/backend/src
+      - /c/Users/Owner/prodev-conference-app/conference/data:/usr/local/conference/data
+      - /c/Users/Owner/prodev-conference-app/conference/src:/usr/local/conference/src
   frontend:
     build:
       context: ./frontend
     depends_on:
-      - backend
+      - conference
       - locations
     environment:
       PORT: 80
@@ -85,9 +85,9 @@ services:
     environment:
       POSTGRES_DB: conference_db
       POSTGRES_PASSWORD: 123456
-      POSTGRES_USER: backend_service
+      POSTGRES_USER: conference_service
     image: "postgres:latest"
     ports:
       - "5432:5432"
     volumes: 
-      - /c/Users/Owner/prodev-conference-app/backend/data:/data/db
+      - /c/Users/Owner/prodev-conference-app/conference/data:/data/db
