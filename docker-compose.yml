@@ -1,25 +1,17 @@
 version: "3.9"
 services:
-  auth-postgres:
-    environment:
-      POSTGRES_DB: auth
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_USER: auth_service
-    image: "postgres:latest"
-    volumes: 
-      - /c/Users/Owner/prodev-conference-app/auth/data:/data/db
   auth:
     build: 
       context: ./auth
     depends_on:
-      - auth-postgres
+      - postgres
     environment:
       PGAPPNAME: conference_app
-      PGDATABASE: auth
-      PGHOST: auth-postgres
+      PGDATABASE: conference_db
+      PGHOST: postgres
       PGPASSWORD: 123456
       PGPORT: 5432
-      PGUSER: auth_service
+      PGUSER: conference_service
     ports:
       - "8083:80"
     volumes:
@@ -55,26 +47,18 @@ services:
       REACT_APP_API_URL: 'http://localhost:8080/api'
     ports:
       - "8081:80"
-  locations-postgres:
-    environment:
-      POSTGRES_DB: locations
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_USER: locations_service
-    image: "postgres:latest"
-    volumes: 
-      - /c/Users/Owner/prodev-conference-app/locations/data:/data/db
   locations:
     build: 
       context: ./locations
     depends_on:
-      - locations-postgres
+      - postgres
     environment:
       PGAPPNAME: conference_app
-      PGDATABASE: locations
-      PGHOST: locations-postgres
+      PGDATABASE: conference_db
+      PGHOST: postgres
       PGPASSWORD: 123456
       PGPORT: 5432
-      PGUSER: locations_service
+      PGUSER: conference_service
     ports:
       - "8082:80"
     volumes:
