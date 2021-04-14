@@ -15,8 +15,8 @@ services:
     ports:
       - "8083:80"
     volumes:
-      - /c/Users/Owner/prodev-conference-app/auth/data:/usr/local/auth/data
-      - /c/Users/Owner/prodev-conference-app/auth/src:/usr/local/auth/src
+      - ./auth/data:/usr/local/auth/data
+      - ./auth/src:/usr/local/auth/src
   conference:
     build: 
       context: ./conference
@@ -34,8 +34,8 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - /c/Users/Owner/prodev-conference-app/conference/data:/usr/local/conference/data
-      - /c/Users/Owner/prodev-conference-app/conference/src:/usr/local/conference/src
+      - ./conference/data:/usr/local/conference/data
+      - ./conference/src:/usr/local/conference/src
   frontend:
     build:
       context: ./frontend
@@ -62,8 +62,8 @@ services:
     ports:
       - "8082:80"
     volumes:
-      - /c/Users/Owner/prodev-conference-app/locations/data:/usr/local/locations/data
-      - /c/Users/Owner/prodev-conference-app/locations/src:/usr/local/locations/src
+      - ./locations/data:/usr/local/locations/data
+      - ./locations/src:/usr/local/locations/src
   postgres:
     container_name: postgres
     environment:
@@ -74,4 +74,4 @@ services:
     ports:
       - "5432:5432"
     volumes: 
-      - /c/Users/Owner/prodev-conference-app/conference/data:/data/db
+      - ./conference/data:/data/db
