@@ -40,7 +40,7 @@ router.put('new_session', '/', async ctx => {
     ctx.status = 201;
     ctx.body = { token };
   } else {
-    ctx.status = 404;
+    ctx.status = 401;
     ctx.body = {
       code: 'BAD_CREDENTIALS',
       message: 'Could not authenticate with those credentials'
