@@ -12,6 +12,7 @@ services:
       PGPASSWORD: 123456
       PGPORT: 5432
       PGUSER: conference_service
+    init: true
     ports:
       - "8083:80"
     volumes:
@@ -33,6 +34,7 @@ services:
       PGPASSWORD: 123456
       PGPORT: 5432
       PGUSER: conference_service
+    init: true
     ports:
       - "8080:80"
     volumes:
@@ -62,6 +64,7 @@ services:
       PGPASSWORD: 123456
       PGPORT: 5432
       PGUSER: conference_service
+    init: true
     ports:
       - "8082:80"
     volumes:
