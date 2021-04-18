@@ -25,6 +25,7 @@ services:
       - locations
       - postgres
     environment:
+      AUTH_API_URL: http://auth/api
       PGAPPNAME: conference_app
       PGDATABASE: conference_db
       PGHOST: postgres
@@ -44,7 +45,7 @@ services:
       - locations
     environment:
       PORT: 80
-      REACT_APP_API_URL: 'http://localhost:8080/api'
+      REACT_APP_API_URL: http://localhost:8081/api
     ports:
       - "8081:80"
   locations:
@@ -53,6 +54,7 @@ services:
     depends_on:
       - postgres
     environment:
+      AUTH_API_URL: http://auth/api
       PGAPPNAME: conference_app
       PGDATABASE: conference_db
       PGHOST: postgres

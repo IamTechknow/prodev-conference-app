@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { pool } from './db/index.mjs';
+import fetch from 'node-fetch';
 
 dotenv.config();
 
@@ -52,9 +52,14 @@ export async function bearer(ctx, next) {
 }
 
 export async function identify(ctx, next) {
-  let { rows } = await pool.query(`
-    SELECT id FROM accounts WHERE email = $1
-  `, [ctx.claims.email]);
+  // make API call to get account ID by email
+  const email = ctx.claims.email;
+  const apiBase = process.env['AUTH_API_URL'];
+  if (apiBase == null) {
+    throw new Error('ERROR: Missing AUTH_API_URL environment variable.')
+  }
+  const rows = await fetch(apiBase + `/identify/?email=${encodeURI(email)}`)
+    .then((res) => res.json());
   if (rows.length === 1) {
     ctx.claims.id = rows[0].id;
   }
