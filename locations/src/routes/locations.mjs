@@ -11,6 +11,15 @@ async function selectAll() {
   `);
 }
 
+async function selectLocation(locationID) {
+  const rows = await pool.query(`
+    SELECT l.id, l.name, l.city, l.state, l.maximum_vendor_count as "maximumVendorCount", l.room_count AS "roomCount", created, updated
+    FROM locations l
+    WHERE l.id = $1
+  `, [locationID]);
+  return rows.length === 1 ? rows[0] : null;
+}
+
 export const router = new Router({
   prefix: '/locations',
 });
@@ -20,6 +29,23 @@ router.use(authorize);
 router.get('/', async ctx => {
   const { rows } = await selectAll();
   ctx.body = rows;
+});
+
+router.get('/location', async (ctx) => {
+  const v = await ctx.validator(ctx.query, {
+    id: 'required|integer|min:1',
+  });
+  const fails = await v.fails();
+  if (fails) {
+    ctx.status = 400;
+    return ctx.body = {
+      code: 'INVALID_PARAMETER',
+      message: 'Location ID is required.',
+      errors: v.errors,
+    };
+  }
+  const location = await selectLocation(ctx.query.id);
+  ctx.body = location;
 });
 
 router.post('/', async ctx => {
