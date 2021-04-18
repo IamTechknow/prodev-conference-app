@@ -3,6 +3,7 @@ import Router from '@koa/router';
 import { authorize, identify } from '../security.mjs';
 
 async function getOneEvent(id, email) {
+  // TODO: We need to return the location for the event too. So make API call to query for location and use it here!
   const { rows } = await pool.query(`
     SELECT e.id, e.name, e.from, e.to, e.description, e.logo_url AS "logoUrl", e.created, e.updated, e.version,
            e.number_of_presentations AS "numberOfPresentations",
@@ -12,10 +13,8 @@ async function getOneEvent(id, email) {
            l.created AS location_created, l.updated AS location_updated
     FROM events e
     JOIN locations l ON (e.location_id = l.id)
-    JOIN accounts a ON (e.account_id = a.id)
     WHERE e.id = $1
-    AND a.email = $2
-  `, [id, email]);
+  `, [id]);
 
   if (rows.length === 0) {
     return null;
@@ -58,10 +57,8 @@ router.get('/', async ctx => {
   const { rows } = await pool.query(`
       SELECT e.id, e.name, e.from, e.to, e.description, e.logo_url AS "logoUrl"
       FROM events e
-      JOIN accounts a ON(e.account_id = a.id)
-      WHERE a.email = $1
     `,
-    [ctx.claims.email]
+    []
   );
   ctx.body = rows;
 });
@@ -95,6 +92,7 @@ router.post('/', identify, async ctx => {
       message: 'Could not create an event with that location or account.'
     };
   }
+  // TODO: As with above TODO, reuse API call or make another API endpoint for getting this location.
   const { rows: locationRows } = await pool.query(`
     SELECT l.id, l.name, l.city, l.state, l.maximum_vendor_count as "maximumVendorCount", l.room_count AS "roomCount", created, updated
     FROM locations l
@@ -140,8 +138,7 @@ router.delete('/:id', async ctx => {
     await pool.query(`
       DELETE FROM events
       WHERE id = $1
-        AND account_id IN(SELECT id from accounts WHERE email = $2)
-    `, [id, ctx.claims.email]);
+    `, [id]);
   }
 
   ctx.body = event || {};
@@ -170,7 +167,7 @@ router.put('/:id', identify, async ctx => {
         AND version = $2
         AND account_id = $11
       RETURNING id, created, updated, version
-    `, [ctx.params.id, version, name, from, to, description, logoUrl, locationId, numberOfPresentations,  maximumNumberOfAttendees, ctx.claims.id ]);
+    `, [ctx.params.id, version, name, from, to, description, logoUrl, locationId, numberOfPresentations, maximumNumberOfAttendees, ctx.claims.id]);
     eventRows = rows;
   } catch (e) {
     console.error(e);
@@ -187,7 +184,7 @@ router.put('/:id', identify, async ctx => {
       message: 'Attempted to update an event with an old version',
     };
   }
-
+  // TODO replace with API call for locations
   const { rows: locationRows } = await pool.query(`
     SELECT l.id, l.name, l.city, l.state, l.maximum_vendor_count as "maximumVendorCount", l.room_count AS "roomCount", created, updated
     FROM locations l
