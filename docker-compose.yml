@@ -26,6 +26,7 @@ services:
       - postgres
     environment:
       AUTH_API_URL: http://auth/api
+      LOCATIONS_API_URL: http://locations/api
       PGAPPNAME: conference_app
       PGDATABASE: conference_db
       PGHOST: postgres
