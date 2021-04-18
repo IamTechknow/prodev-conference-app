@@ -4,20 +4,29 @@ services:
     build: 
       context: ./auth
     depends_on:
-      - postgres
+      - auth_db
     environment:
-      PGAPPNAME: conference_app
-      PGDATABASE: conference_db
-      PGHOST: postgres
+      PGAPPNAME: auth_service
+      PGDATABASE: auth_db
+      PGHOST: auth_db
       PGPASSWORD: 123456
       PGPORT: 5432
-      PGUSER: conference_service
+      PGUSER: auth_service
     init: true
     ports:
       - "8083:80"
     volumes:
       - ./auth/data:/usr/local/auth/data
       - ./auth/src:/usr/local/auth/src
+  auth_db:
+    container_name: auth_db
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: auth_service
+    image: "postgres:latest"
+    volumes: 
+      - ./auth/data:/data/db
   conference:
     build: 
       context: ./conference
@@ -55,21 +64,30 @@ services:
     build: 
       context: ./locations
     depends_on:
-      - postgres
+      - locations_db
     environment:
       AUTH_API_URL: http://auth/api
-      PGAPPNAME: conference_app
-      PGDATABASE: conference_db
-      PGHOST: postgres
+      PGAPPNAME: locations_app
+      PGDATABASE: locations_db
+      PGHOST: locations_db
       PGPASSWORD: 123456
       PGPORT: 5432
-      PGUSER: conference_service
+      PGUSER: locations_service
     init: true
     ports:
       - "8082:80"
     volumes:
       - ./locations/data:/usr/local/locations/data
       - ./locations/src:/usr/local/locations/src
+  locations_db:
+    container_name: locations_db
+    environment:
+      POSTGRES_DB: locations_db
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: locations_service
+    image: "postgres:latest"
+    volumes: 
+      - ./locations/data:/data/db
   postgres:
     container_name: postgres
     environment:
