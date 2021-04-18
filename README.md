@@ -6,3 +6,7 @@ please read the instructions in each project's README files.
 
 - [Frontend README](./frontend/README.md)
 - [Conference README](./conference/README.md)
+
+## Domain diagram
+
+![domain diagram](./conference/src/docs/domain_diagram.png)
