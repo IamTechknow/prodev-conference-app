@@ -1,0 +1,33 @@
+{
+  "name": "prodev-conference-app-backend",
+  "version": "1.0.0",
+  "description": "The backend for the Professional Development Conference App.",
+  "main": "src/server.mjs",
+  "scripts": {
+    "dev": "nodemon src/server.mjs",
+    "migrate": "db-migrate",
+    "start": "node src/server.mjs"
+  },
+  "author": "Professional Development",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^10.0.0",
+    "bcryptjs": "^2.4.3",
+    "db-migrate": "^0.11.12",
+    "db-migrate-pg": "^1.2.2",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "node-fetch": "^2.6.1",
+    "node-input-validator": "^4.3.3",
+    "pg": "^8.5.1",
+    "qrcode": "^1.4.4",
+    "swagger-parser": "^10.0.2",
+    "swagger-ui-dist": "^3.41.1"
+  }
+}

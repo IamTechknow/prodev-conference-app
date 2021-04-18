@@ -1,5 +1,21 @@
 # Conference GO! Backend
 
+## Refactoring notes
+
+The conference microservice is refactored to represent a bounded context for a conference
+in the system domain. It relies on its datastore service and the auth and locations microservice.
+Here are some changes that resulted from the refactor:
+
+* Routes and DB schemas related to authentication and locations are split to their own microservices.
+* In the database schemas, foriegn key references to the accounts tables are removed.
+* Code to query on the locations table is replaced with an API call to query for a
+  single location with a given location ID.
+* Code to identify an email address is replaced by an API call to the auth service's
+  identify endpoint.
+* Process handler is added to be able to respond to Ctrl-C for the server process to exit
+
+## Introduction
+
 This is the Conference GO! backend. It is a [Node.js](https://nodejs.org)
 application that uses [Koa.js](https://koajs.com) as its routing and response
 mechanism. It uses a PostgreSQL database and the

@@ -14,6 +14,12 @@ if (Number.isNaN(port)) {
   process.exit(1);
 }
 
+const _getShutdownHandler = (server) => {
+  return () => {
+    process.exit(0);
+  };
+};
+
 const app = new Koa();
 app.use(cors({
   allowHeaders: ['Authorization', 'Content-Type']
@@ -27,3 +33,5 @@ app.use(bodyParser({ multipart: true }));
 app.use(router.routes());
 
 app.listen(port, () => console.log(`Accepting connections on ${port}`));
+
+process.on('SIGINT', _getShutdownHandler(app));

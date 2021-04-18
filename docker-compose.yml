@@ -1,38 +1,101 @@
 version: "3.9"
 services:
-  backend:
+  auth:
     build: 
-      context: ./backend
+      context: ./auth
     depends_on:
+      - auth_db
+    environment:
+      PGAPPNAME: auth_service
+      PGDATABASE: auth_db
+      PGHOST: auth_db
+      PGPASSWORD: 123456
+      PGPORT: 5432
+      PGUSER: auth_service
+    init: true
+    ports:
+      - "8083:80"
+    volumes:
+      - ./auth/data:/usr/local/auth/data
+      - ./auth/src:/usr/local/auth/src
+  auth_db:
+    container_name: auth_db
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: auth_service
+    image: "postgres:latest"
+    volumes: 
+      - ./auth/data:/data/db
+  conference:
+    build: 
+      context: ./conference
+    depends_on:
+      - auth
+      - locations
       - postgres
     environment:
+      AUTH_API_URL: http://auth/api
+      LOCATIONS_API_URL: http://locations/api
       PGAPPNAME: conference_app
       PGDATABASE: conference_db
       PGHOST: postgres
       PGPASSWORD: 123456
       PGPORT: 5432
-      PGUSER: backend_service
+      PGUSER: conference_service
+    init: true
     ports:
       - "8080:80"
     volumes:
-      - /c/Users/Owner/prodev-conference-app/backend/data:/usr/local/backend/data
-      - /c/Users/Owner/prodev-conference-app/backend/src:/usr/local/backend/src
+      - ./conference/data:/usr/local/conference/data
+      - ./conference/src:/usr/local/conference/src
   frontend:
     build:
       context: ./frontend
+    depends_on:
+      - conference
+      - locations
     environment:
       PORT: 80
-      REACT_APP_API_URL: 'http://localhost:8080/api'
+      REACT_APP_API_URL: http://localhost:8081/api
     ports:
       - "8081:80"
+  locations:
+    build: 
+      context: ./locations
+    depends_on:
+      - locations_db
+    environment:
+      AUTH_API_URL: http://auth/api
+      PGAPPNAME: locations_app
+      PGDATABASE: locations_db
+      PGHOST: locations_db
+      PGPASSWORD: 123456
+      PGPORT: 5432
+      PGUSER: locations_service
+    init: true
+    ports:
+      - "8082:80"
+    volumes:
+      - ./locations/data:/usr/local/locations/data
+      - ./locations/src:/usr/local/locations/src
+  locations_db:
+    container_name: locations_db
+    environment:
+      POSTGRES_DB: locations_db
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: locations_service
+    image: "postgres:latest"
+    volumes: 
+      - ./locations/data:/data/db
   postgres:
     container_name: postgres
     environment:
       POSTGRES_DB: conference_db
       POSTGRES_PASSWORD: 123456
-      POSTGRES_USER: backend_service
+      POSTGRES_USER: conference_service
     image: "postgres:latest"
     ports:
       - "5432:5432"
     volumes: 
-      - /c/Users/Owner/prodev-conference-app/backend/data:/data/db
+      - ./conference/data:/data/db

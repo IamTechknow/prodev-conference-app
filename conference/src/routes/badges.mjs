@@ -29,10 +29,8 @@ router.get('/', async ctx => {
     SELECT b.id, b.email, b.name, b.company_name AS "companyName", b.role
     FROM badges b
     JOIN events e ON (b.event_id = e.id)
-    JOIN accounts a ON (e.account_id = a.id)
-    WHERE a.id = $1
-    AND e.id = $2
-  `, [ctx.claims.id, eventId])
+    WHERE e.id = $1
+  `, [eventId])
   ctx.body = rows.map(x => ({
     name: x.name,
     companyName: x.companyName,

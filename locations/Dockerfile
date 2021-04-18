@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /usr/local/backend
+WORKDIR /usr/local/locations
 
 COPY . .
 
