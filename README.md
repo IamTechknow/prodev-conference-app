@@ -10,3 +10,7 @@ please read the instructions in each project's README files.
 ## Domain diagram
 
 ![domain diagram](./conference/src/docs/domain_diagram.png)
+
+## Setup instructions
+
+After forking the repo, copy template.env to .env in the auth, conference, and locations folders. Then you can go back to the project root, run `docker compose up` and the whole project should build and start up!

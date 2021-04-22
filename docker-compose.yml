@@ -5,13 +5,6 @@ services:
       context: ./auth
     depends_on:
       - auth_db
-    environment:
-      PGAPPNAME: auth_service
-      PGDATABASE: auth_db
-      PGHOST: auth_db
-      PGPASSWORD: 123456
-      PGPORT: 5432
-      PGUSER: auth_service
     init: true
     ports:
       - "8083:80"
@@ -34,15 +27,6 @@ services:
       - auth
       - locations
       - postgres
-    environment:
-      AUTH_API_URL: http://auth/api
-      LOCATIONS_API_URL: http://locations/api
-      PGAPPNAME: conference_app
-      PGDATABASE: conference_db
-      PGHOST: postgres
-      PGPASSWORD: 123456
-      PGPORT: 5432
-      PGUSER: conference_service
     init: true
     ports:
       - "8080:80"
@@ -65,14 +49,6 @@ services:
       context: ./locations
     depends_on:
       - locations_db
-    environment:
-      AUTH_API_URL: http://auth/api
-      PGAPPNAME: locations_app
-      PGDATABASE: locations_db
-      PGHOST: locations_db
-      PGPASSWORD: 123456
-      PGPORT: 5432
-      PGUSER: locations_service
     init: true
     ports:
       - "8082:80"
